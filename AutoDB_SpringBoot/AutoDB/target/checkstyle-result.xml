@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="9.3">
+<file name="C:\Progkorny\AutoDB_SpringBoot\AutoDB\src\test\java\hu\autodb\controller\MarkaControllerTest.java">
+<error line="59" column="14" severity="error" message="Name &apos;visszaadja_a_markak_listajat&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="75" column="14" severity="error" message="Name &apos;visszaad_egy_markat&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="85" column="14" severity="error" message="Name &apos;negyvenegy_ha_nem_letezik&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="100" column="14" severity="error" message="Name &apos;letrehoz_egy_markat&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="112" column="14" severity="error" message="Name &apos;negyvenes_ha_hianyzik_mezo&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="128" column="14" severity="error" message="Name &apos;frissiti_a_markat&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="145" column="14" severity="error" message="Name &apos;sikeres_torles&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="152" column="14" severity="error" message="Name &apos;negyvenegy_ha_nem_letezik&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="167" column="14" severity="error" message="Name &apos;nevkereses_talalatok&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="177" column="14" severity="error" message="Name &apos;orszagkereses_talalatok&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+</file>
+<file name="C:\Progkorny\AutoDB_SpringBoot\AutoDB\src\test\java\hu\autodb\service\MarkaServiceTest.java">
+<error line="51" column="14" severity="error" message="Name &apos;visszaadja_az_osszes_markat&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="62" column="14" severity="error" message="Name &apos;ures_lista_ha_nincs_adat&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="75" column="14" severity="error" message="Name &apos;megtalal_id_alapjan&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="85" column="14" severity="error" message="Name &apos;kivetel_ha_nem_letezik&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="100" column="14" severity="error" message="Name &apos;ment_uj_markat&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="112" column="14" severity="error" message="Name &apos;duplikat_nevnel_kivetel&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="129" column="14" severity="error" message="Name &apos;frissiti_az_adatokat&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="143" column="14" severity="error" message="Name &apos;nem_letezo_id_kivetel&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="157" column="14" severity="error" message="Name &apos;torli_ha_letezik&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="167" column="14" severity="error" message="Name &apos;kivetel_ha_nem_letezik&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="183" column="14" severity="error" message="Name &apos;nevkereses_delegalja_repository&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="193" column="14" severity="error" message="Name &apos;orszagkereses_delegalja_repository&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+</file>
+<file name="C:\Progkorny\AutoDB_SpringBoot\AutoDB\src\test\java\hu\autodb\service\ModellServiceTest.java">
+<error line="58" column="14" severity="error" message="Name &apos;visszaadja_modellt&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="68" column="14" severity="error" message="Name &apos;kivetel_ha_nem_letezik&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="82" column="14" severity="error" message="Name &apos;visszaadja_marka_modelljeit&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="94" column="14" severity="error" message="Name &apos;kivetel_nem_letezo_markara&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="109" column="14" severity="error" message="Name &apos;letrehozza_modellt&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="127" column="14" severity="error" message="Name &apos;frissiti_az_adatokat&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="141" column="14" severity="error" message="Name &apos;kivetel_ha_nem_letezik&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="155" column="14" severity="error" message="Name &apos;torli_ha_letezik&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="165" column="14" severity="error" message="Name &apos;kivetel_ha_nem_letezik&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="181" column="14" severity="error" message="Name &apos;kategoria_kereses&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+<error line="191" column="14" severity="error" message="Name &apos;nev_kereses&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+</file>
+</checkstyle>
