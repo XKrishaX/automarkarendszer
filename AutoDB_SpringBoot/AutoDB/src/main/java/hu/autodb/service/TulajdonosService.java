@@ -8,9 +8,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Tulajdonos üzleti logika.
- */
 @Service
 @Transactional
 public class TulajdonosService {

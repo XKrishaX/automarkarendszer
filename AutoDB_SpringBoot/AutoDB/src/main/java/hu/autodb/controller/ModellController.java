@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Modell REST API végpontok.
- */
+
 @RestController
 @RequestMapping("/api/modellek")
 public class ModellController {
@@ -29,50 +27,48 @@ public class ModellController {
         this.modellService = modellService;
     }
 
-    /** Összes modell lekérdezése. */
+
     @GetMapping
     public List<Modell> getAll() {
         return modellService.getAll();
     }
 
-    /** Egy modell lekérdezése ID alapján. */
     @GetMapping("/{id}")
     public Modell getById(@PathVariable Long id) {
         return modellService.getById(id);
     }
 
-    /** Modellek egy adott márkához. */
+
     @GetMapping("/marka/{markaId}")
     public List<Modell> getByMarkaId(@PathVariable Long markaId) {
         return modellService.getByMarkaId(markaId);
     }
 
-    /** Keresés kategória alapján. */
     @GetMapping("/kereses/kategoria")
     public List<Modell> getByKategoria(@RequestParam String q) {
         return modellService.getByKategoria(q);
     }
 
-    /** Keresés modellnévben. */
+
     @GetMapping("/kereses/nev")
     public List<Modell> searchByNev(@RequestParam String q) {
         return modellService.searchByNev(q);
     }
 
-    /** Új modell létrehozása egy márkához. */
+
     @PostMapping("/marka/{markaId}")
     public ResponseEntity<Modell> create(@PathVariable Long markaId, @Valid @RequestBody Modell modell) {
         Modell saved = modellService.create(markaId, modell);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    /** Modell módosítása. */
+
     @PutMapping("/{id}")
     public Modell update(@PathVariable Long id, @Valid @RequestBody Modell modell) {
         return modellService.update(id, modell);
     }
 
-    /** Modell törlése. */
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         modellService.delete(id);

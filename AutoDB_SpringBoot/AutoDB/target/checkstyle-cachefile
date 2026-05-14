@@ -1,8 +1,8 @@
-#Wed May 13 12:44:55 CEST 2026
+#Wed May 20 09:08:25 CEST 2026
 C\:\\Progkorny\\AutoDB_SpringBoot\\AutoDB\\src\\main\\java\\hu\\autodb\\AutoDbApplication.java=1778668254046
-C\:\\Progkorny\\AutoDB_SpringBoot\\AutoDB\\src\\main\\java\\hu\\autodb\\controller\\MarkaController.java=1778667264578
-C\:\\Progkorny\\AutoDB_SpringBoot\\AutoDB\\src\\main\\java\\hu\\autodb\\controller\\ModellController.java=1778667264591
-C\:\\Progkorny\\AutoDB_SpringBoot\\AutoDB\\src\\main\\java\\hu\\autodb\\controller\\TulajdonosController.java=1778667264584
+C\:\\Progkorny\\AutoDB_SpringBoot\\AutoDB\\src\\main\\java\\hu\\autodb\\controller\\MarkaController.java=1779258967391
+C\:\\Progkorny\\AutoDB_SpringBoot\\AutoDB\\src\\main\\java\\hu\\autodb\\controller\\ModellController.java=1779258967376
+C\:\\Progkorny\\AutoDB_SpringBoot\\AutoDB\\src\\main\\java\\hu\\autodb\\controller\\TulajdonosController.java=1779258967404
 C\:\\Progkorny\\AutoDB_SpringBoot\\AutoDB\\src\\main\\java\\hu\\autodb\\exception\\GlobalExceptionHandler.java=1778668254076
 C\:\\Progkorny\\AutoDB_SpringBoot\\AutoDB\\src\\main\\java\\hu\\autodb\\exception\\ResourceNotFoundException.java=1778668254106
 C\:\\Progkorny\\AutoDB_SpringBoot\\AutoDB\\src\\main\\java\\hu\\autodb\\model\\Marka.java=1778668254168
@@ -13,5 +13,5 @@ C\:\\Progkorny\\AutoDB_SpringBoot\\AutoDB\\src\\main\\java\\hu\\autodb\\reposito
 C\:\\Progkorny\\AutoDB_SpringBoot\\AutoDB\\src\\main\\java\\hu\\autodb\\repository\\TulajdonosRepository.java=1778668254150
 C\:\\Progkorny\\AutoDB_SpringBoot\\AutoDB\\src\\main\\java\\hu\\autodb\\service\\MarkaService.java=1778667264538
 C\:\\Progkorny\\AutoDB_SpringBoot\\AutoDB\\src\\main\\java\\hu\\autodb\\service\\ModellService.java=1778667264546
-C\:\\Progkorny\\AutoDB_SpringBoot\\AutoDB\\src\\main\\java\\hu\\autodb\\service\\TulajdonosService.java=1778667264554
+C\:\\Progkorny\\AutoDB_SpringBoot\\AutoDB\\src\\main\\java\\hu\\autodb\\service\\TulajdonosService.java=1779257813650
 configuration*?=74F901FCEB5B3015A415BE5DC82564B5B5AFA878
