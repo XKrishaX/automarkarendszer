@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoDB – Autómárka Adatbázis</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0d0d0f;
+    --surface:   #151518;
+    --surface2:  #1c1c21;
+    --border:    rgba(255,255,255,0.07);
+    --accent:    #e8ff47;
+    --accent2:   #ff4747;
+    --text:      #f0f0f0;
+    --muted:     #666;
+    --muted2:    #999;
+    --radius:    12px;
+    --font-head: 'Bebas Neue', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── SIDEBAR ── */
+  .layout { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    width: 220px;
+    min-height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+  }
+
+  .sidebar-logo {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-logo h1 {
+    font-family: var(--font-head);
+    font-size: 32px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .sidebar-logo span {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .nav { padding: 16px 12px; flex: 1; }
+
+  .nav-section {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 16px 12px 8px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted2);
+    transition: all 0.15s;
+    margin-bottom: 2px;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active {
+    background: var(--accent);
+    color: #000;
+  }
+  .nav-item .icon { font-size: 18px; width: 22px; text-align: center; }
+
+  .sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .status-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #4ade80;
+    margin-right: 6px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: 220px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topbar {
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .topbar-title {
+    font-family: var(--font-head);
+    font-size: 26px;
+    letter-spacing: 1px;
+  }
+  .topbar-actions { display: flex; gap: 10px; align-items: center; }
+
+  .btn {
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-primary:hover { background: #d4eb30; transform: translateY(-1px); }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted2);
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger { background: var(--accent2); color: #fff; }
+  .btn-danger:hover { background: #cc3333; }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+  .content { padding: 28px 32px; }
+
+  /* ── SEARCH BAR ── */
+  .search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    align-items: center;
+  }
+  .search-input-wrap {
+    flex: 1;
+    position: relative;
+  }
+  .search-input-wrap .s-icon {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .search-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 11px 14px 11px 40px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--muted); }
+
+  select.search-input { padding-left: 14px; cursor: pointer; }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .stat-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: rgba(232,255,71,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+  .stat-icon.red { background: rgba(255,71,71,0.1); }
+  .stat-icon.blue { background: rgba(71,147,255,0.1); }
+  .stat-num {
+    font-family: var(--font-head);
+    font-size: 34px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-icon.red + div .stat-num { color: var(--accent2); }
+  .stat-icon.blue + div .stat-num { color: #4793ff; }
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted2);
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── TABLE ── */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .table-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .table-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .table-count {
+    font-size: 12px;
+    color: var(--muted);
+    background: var(--surface2);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 12px 20px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 13px 20px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.025); }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge-green { background: rgba(74,222,128,0.15); color: #4ade80; }
+  .badge-blue  { background: rgba(71,147,255,0.15); color: #4793ff; }
+  .badge-yellow{ background: rgba(232,255,71,0.15); color: var(--accent); }
+  .badge-red   { background: rgba(255,71,71,0.15); color: var(--accent2); }
+
+  .actions { display: flex; gap: 6px; }
+
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--muted);
+  }
+  .empty-state .big { font-size: 40px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    width: 480px;
+    max-width: 95vw;
+    animation: modalIn 0.2s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal-title {
+    font-family: var(--font-head);
+    font-size: 26px;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .modal-close {
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 20px;
+    line-height: 1;
+    background: none; border: none;
+    color: var(--muted2);
+    font-size: 24px;
+  }
+  .modal-close:hover { color: var(--text); }
+
+  .form-group { margin-bottom: 16px; }
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 7px;
+  }
+  .form-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 11px 14px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus { border-color: var(--accent); }
+  .form-input::placeholder { color: var(--muted); }
+  select.form-input { cursor: pointer; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .modal-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── TOAST ── */
+  .toast-container {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .toast {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 13px;
+    min-width: 260px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    animation: toastIn 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .toast.error { border-left-color: var(--accent2); }
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ── PAGE SECTIONS ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .spinner {
+    display: inline-block;
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error-banner {
+    background: rgba(255,71,71,0.1);
+    border: 1px solid rgba(255,71,71,0.3);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    color: var(--accent2);
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h1>AutoDB</h1>
+      <span>Járműnyilvántartó</span>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Adatok</div>
+      <div class="nav-item active" onclick="showPage('markak')">
+        <span class="icon">🏎️</span> Márkák
+      </div>
+      <div class="nav-item" onclick="showPage('modellek')">
+        <span class="icon">🚗</span> Modellek
+      </div>
+      <div class="nav-item" onclick="showPage('tulajdonosok')">
+        <span class="icon">👤</span> Tulajdonosok
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <span class="status-dot"></span>
+      Backend: localhost:8080
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ══ MÁRKÁK OLDAL ══ -->
+    <div id="page-markak" class="page active">
+      <div class="topbar">
+        <div class="topbar-title">MÁRKÁK</div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary" onclick="openModal('marka-add')">
+            <span>＋</span> Új márka
+          </button>
+        </div>
+      </div>
+      <div class="content">
+        <div class="stats-row" id="stats-markak">
+          <div class="stat-card">
+            <div class="stat-icon">🏎️</div>
+            <div>
+              <div class="stat-num" id="stat-marka-count">–</div>
+              <div class="stat-label">Márkák száma</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon red">🚗</div>
+            <div>
+              <div class="stat-num" id="stat-modell-count">–</div>
+              <div class="stat-label">Modellek száma</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue">👤</div>
+            <div>
+              <div class="stat-num" id="stat-tulaj-count">–</div>
+              <div class="stat-label">Tulajdonosok</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="search-bar">
+          <div class="search-input-wrap">
+            <span class="s-icon">🔍</span>
+            <input class="search-input" id="marka-search" placeholder="Keresés névben vagy országban…" oninput="filterMarkak()">
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header">
+            <span class="table-title">Márkák listája</span>
+            <span class="table-count" id="marka-count-badge">0 márka</span>
+          </div>
+          <div id="marka-table-body">
+            <div class="loading"><span class="spinner"></span>Betöltés…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ MODELLEK OLDAL ══ -->
+    <div id="page-modellek" class="page">
+      <div class="topbar">
+        <div class="topbar-title">MODELLEK</div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary" onclick="openModal('modell-add')">
+            <span>＋</span> Új modell
+          </button>
+        </div>
+      </div>
+      <div class="content">
+        <div class="search-bar">
+          <div class="search-input-wrap">
+            <span class="s-icon">🔍</span>
+            <input class="search-input" id="modell-search" placeholder="Keresés modellnévben…" oninput="filterModellek()">
+          </div>
+          <select class="search-input" id="modell-filter-kat" onchange="filterModellek()" style="width:160px; flex:none;">
+            <option value="">Minden kategória</option>
+            <option>Szedán</option>
+            <option>SUV</option>
+            <option>Sportautó</option>
+            <option>Kombi</option>
+            <option>Kupé</option>
+            <option>Kabriolet</option>
+            <option>Kisautó</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <div class="table-header">
+            <span class="table-title">Modellek listája</span>
+            <span class="table-count" id="modell-count-badge">0 modell</span>
+          </div>
+          <div id="modell-table-body">
+            <div class="loading"><span class="spinner"></span>Betöltés…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TULAJDONOSOK OLDAL ══ -->
+    <div id="page-tulajdonosok" class="page">
+      <div class="topbar">
+        <div class="topbar-title">TULAJDONOSOK</div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary" onclick="openModal('tulaj-add')">
+            <span>＋</span> Új tulajdonos
+          </button>
+        </div>
+      </div>
+      <div class="content">
+        <div class="search-bar">
+          <div class="search-input-wrap">
+            <span class="s-icon">🔍</span>
+            <input class="search-input" id="tulaj-search" placeholder="Keresés névben vagy e-mailben…" oninput="filterTulajdonosok()">
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-header">
+            <span class="table-title">Tulajdonosok listája</span>
+            <span class="table-count" id="tulaj-count-badge">0 tulajdonos</span>
+          </div>
+          <div id="tulaj-table-body">
+            <div class="loading"><span class="spinner"></span>Betöltés…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ══ MODALS ══ -->
+
+<!-- Márka hozzáadás -->
+<div class="modal-overlay" id="modal-marka-add">
+  <div class="modal">
+    <div class="modal-title">
+      ÚJ MÁRKA
+      <button class="modal-close" onclick="closeModal('marka-add')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Márka neve *</label>
+      <input class="form-input" id="marka-add-nev" placeholder="pl. Ferrari">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Ország *</label>
+        <input class="form-input" id="marka-add-orszag" placeholder="pl. Olaszország">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Alapítás éve *</label>
+        <input class="form-input" id="marka-add-ev" type="number" placeholder="pl. 1939" min="1800" max="2100">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('marka-add')">Mégse</button>
+      <button class="btn btn-primary" onclick="saveMarka()">💾 Mentés</button>
+    </div>
+  </div>
+</div>
+
+<!-- Márka szerkesztés -->
+<div class="modal-overlay" id="modal-marka-edit">
+  <div class="modal">
+    <div class="modal-title">
+      MÁRKA SZERKESZTÉSE
+      <button class="modal-close" onclick="closeModal('marka-edit')">✕</button>
+    </div>
+    <input type="hidden" id="marka-edit-id">
+    <div class="form-group">
+      <label class="form-label">Márka neve *</label>
+      <input class="form-input" id="marka-edit-nev">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Ország *</label>
+        <input class="form-input" id="marka-edit-orszag">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Alapítás éve *</label>
+        <input class="form-input" id="marka-edit-alapitasEve" type="number" min="1800" max="2100">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('marka-edit')">Mégse</button>
+      <button class="btn btn-primary" onclick="updateMarka()">💾 Mentés</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modell hozzáadás -->
+<div class="modal-overlay" id="modal-modell-add">
+  <div class="modal">
+    <div class="modal-title">
+      ÚJ MODELL
+      <button class="modal-close" onclick="closeModal('modell-add')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Márka *</label>
+      <select class="form-input" id="modell-add-markaid"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Modell neve *</label>
+      <input class="form-input" id="modell-add-nev" placeholder="pl. F40">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Évjárat *</label>
+        <input class="form-input" id="modell-add-ev" type="number" placeholder="pl. 2022" min="1886" max="2100">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Motorméret (cm³) *</label>
+        <input class="form-input" id="modell-add-motor" type="number" placeholder="pl. 2998">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Kategória *</label>
+      <select class="form-input" id="modell-add-kat">
+        <option value="">Válassz…</option>
+        <option>Szedán</option>
+        <option>SUV</option>
+        <option>Sportautó</option>
+        <option>Kombi</option>
+        <option>Kupé</option>
+        <option>Kabriolet</option>
+        <option>Kisautó</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modell-add')">Mégse</button>
+      <button class="btn btn-primary" onclick="saveModell()">💾 Mentés</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modell szerkesztés -->
+<div class="modal-overlay" id="modal-modell-edit">
+  <div class="modal">
+    <div class="modal-title">
+      MODELL SZERKESZTÉSE
+      <button class="modal-close" onclick="closeModal('modell-edit')">✕</button>
+    </div>
+    <input type="hidden" id="modell-edit-id">
+    <div class="form-group">
+      <label class="form-label">Modell neve *</label>
+      <input class="form-input" id="modell-edit-nev">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Évjárat *</label>
+        <input class="form-input" id="modell-edit-ev" type="number" min="1886" max="2100">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Motorméret (cm³) *</label>
+        <input class="form-input" id="modell-edit-motor" type="number">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Kategória *</label>
+      <select class="form-input" id="modell-edit-kat">
+        <option>Szedán</option><option>SUV</option><option>Sportautó</option>
+        <option>Kombi</option><option>Kupé</option><option>Kabriolet</option><option>Kisautó</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modell-edit')">Mégse</button>
+      <button class="btn btn-primary" onclick="updateModell()">💾 Mentés</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tulajdonos hozzáadás -->
+<div class="modal-overlay" id="modal-tulaj-add">
+  <div class="modal">
+    <div class="modal-title">
+      ÚJ TULAJDONOS
+      <button class="modal-close" onclick="closeModal('tulaj-add')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Márka *</label>
+      <select class="form-input" id="tulaj-add-markaid"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Teljes név *</label>
+      <input class="form-input" id="tulaj-add-nev" placeholder="pl. Kiss Béla">
+    </div>
+    <div class="form-group">
+      <label class="form-label">E-mail cím *</label>
+      <input class="form-input" id="tulaj-add-email" type="email" placeholder="pl. kiss.bela@email.hu">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Telefonszám *</label>
+      <input class="form-input" id="tulaj-add-tel" placeholder="pl. +36301234567">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('tulaj-add')">Mégse</button>
+      <button class="btn btn-primary" onclick="saveTulaj()">💾 Mentés</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tulajdonos szerkesztés -->
+<div class="modal-overlay" id="modal-tulaj-edit">
+  <div class="modal">
+    <div class="modal-title">
+      TULAJDONOS SZERKESZTÉSE
+      <button class="modal-close" onclick="closeModal('tulaj-edit')">✕</button>
+    </div>
+    <input type="hidden" id="tulaj-edit-id">
+    <div class="form-group">
+      <label class="form-label">Teljes név *</label>
+      <input class="form-input" id="tulaj-edit-nev">
+    </div>
+    <div class="form-group">
+      <label class="form-label">E-mail cím *</label>
+      <input class="form-input" id="tulaj-edit-email" type="email">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Telefonszám *</label>
+      <input class="form-input" id="tulaj-edit-tel">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('tulaj-edit')">Mégse</button>
+      <button class="btn btn-primary" onclick="updateTulaj()">💾 Mentés</button>
+    </div>
+  </div>
+</div>
+
+<!-- Törlés megerősítés -->
+<div class="modal-overlay" id="modal-confirm">
+  <div class="modal" style="width:380px;">
+    <div class="modal-title">TÖRLÉS MEGERŐSÍTÉSE</div>
+    <p style="color:var(--muted2); font-size:14px; margin-bottom:8px;" id="confirm-text">Biztosan törölni szeretnéd?</p>
+    <p style="color:var(--accent2); font-size:12px;">Ez a művelet nem vonható vissza.</p>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('confirm')">Mégse</button>
+      <button class="btn btn-danger" id="confirm-ok-btn">🗑️ Törlés</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toasts"></div>
+
+<script>
+const API = 'http://localhost:8080/api';
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let markakData = [];
+let modellekData = [];
+let tulajdonosokData = [];
+
+// ─── NAV ─────────────────────────────────────────────────────────────────────
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+
+  if (name === 'markak') loadMarkak();
+  if (name === 'modellek') loadModellek();
+  if (name === 'tulajdonosok') loadTulajdonosok();
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+function toast(msg, type = 'ok') {
+  const el = document.createElement('div');
+  el.className = 'toast' + (type === 'error' ? ' error' : '');
+  el.innerHTML = (type === 'error' ? '❌' : '✅') + ' ' + msg;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
+
+// ─── MODAL ───────────────────────────────────────────────────────────────────
+function openModal(name) {
+  if (name === 'modell-add' || name === 'tulaj-add') fillMarkaSelect(name);
+  document.getElementById('modal-' + name).classList.add('open');
+}
+function closeModal(name) {
+  document.getElementById('modal-' + name).classList.remove('open');
+}
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+});
+
+async function fillMarkaSelect(modalName) {
+  const prefix = modalName === 'modell-add' ? 'modell-add' : 'tulaj-add';
+  const sel = document.getElementById(prefix + '-markaid');
+  if (!markakData.length) await loadMarkakSilent();
+  sel.innerHTML = markakData.map(m => `<option value="${m.id}">${m.nev}</option>`).join('');
+}
+
+// ─── API HELPERS ─────────────────────────────────────────────────────────────
+async function apiFetch(url, opts = {}) {
+  const res = await fetch(API + url, {
+    headers: { 'Content-Type': 'application/json' },
+    ...opts
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ message: 'Ismeretlen hiba' }));
+    throw new Error(err.message || res.statusText);
+  }
+  if (res.status === 204) return null;
+  return res.json();
+}
+
+// ─── STATS ───────────────────────────────────────────────────────────────────
+async function loadStats() {
+  try {
+    const [m, mo, t] = await Promise.all([
+      apiFetch('/markak'),
+      apiFetch('/modellek'),
+      apiFetch('/tulajdonosok')
+    ]);
+    document.getElementById('stat-marka-count').textContent = m.length;
+    document.getElementById('stat-modell-count').textContent = mo.length;
+    document.getElementById('stat-tulaj-count').textContent = t.length;
+  } catch (e) { /* silent */ }
+}
+
+// ─── MÁRKÁK ──────────────────────────────────────────────────────────────────
+async function loadMarkakSilent() {
+  markakData = await apiFetch('/markak');
+}
+
+async function loadMarkak() {
+  try {
+    markakData = await apiFetch('/markak');
+    renderMarkak(markakData);
+    loadStats();
+  } catch (e) {
+    document.getElementById('marka-table-body').innerHTML =
+      `<div class="error-banner" style="margin:16px">⚠️ Backend nem elérhető: ${e.message}</div>`;
+  }
+}
+
+function renderMarkak(data) {
+  const badge = document.getElementById('marka-count-badge');
+  badge.textContent = data.length + ' márka';
+
+  if (!data.length) {
+    document.getElementById('marka-table-body').innerHTML =
+      '<div class="empty-state"><div class="big">🏎️</div><p>Még nincsenek márkák.</p></div>';
+    return;
+  }
+
+  document.getElementById('marka-table-body').innerHTML = `
+    <table>
+      <thead><tr>
+        <th>ID</th><th>Márka neve</th><th>Ország</th><th>Alapítva</th><th>Műveletek</th>
+      </tr></thead>
+      <tbody>
+        ${data.map(m => `
+          <tr>
+            <td><span class="badge badge-yellow">#${m.id}</span></td>
+            <td><strong>${m.nev}</strong></td>
+            <td>${m.orszag}</td>
+            <td>${m.alapitasEve}</td>
+            <td><div class="actions">
+              <button class="btn btn-ghost btn-sm" onclick="editMarka(${m.id},'${esc(m.nev)}','${esc(m.orszag)}',${m.alapitasEve})">✏️ Szerkeszt</button>
+              <button class="btn btn-danger btn-sm" onclick="confirmDelete('marka',${m.id},'${esc(m.nev)}')">🗑️</button>
+            </div></td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+function filterMarkak() {
+  const q = document.getElementById('marka-search').value.toLowerCase();
+  const filtered = markakData.filter(m =>
+    m.nev.toLowerCase().includes(q) || m.orszag.toLowerCase().includes(q));
+  renderMarkak(filtered);
+}
+
+function editMarka(id, nev, orszag, ev) {
+  document.getElementById('marka-edit-id').value = id;
+  document.getElementById('marka-edit-nev').value = nev;
+  document.getElementById('marka-edit-orszag').value = orszag;
+  document.getElementById('marka-edit-alapitasEve').value = ev;
+  openModal('marka-edit');
+}
+
+async function saveMarka() {
+  const nev = document.getElementById('marka-add-nev').value.trim();
+  const orszag = document.getElementById('marka-add-orszag').value.trim();
+  const ev = parseInt(document.getElementById('marka-add-ev').value);
+  if (!nev || !orszag || !ev) { toast('Minden mező kitöltése kötelező!', 'error'); return; }
+  try {
+    await apiFetch('/markak', { method: 'POST', body: JSON.stringify({ nev, orszag, alapitasEve: ev }) });
+    closeModal('marka-add');
+    document.getElementById('marka-add-nev').value = '';
+    document.getElementById('marka-add-orszag').value = '';
+    document.getElementById('marka-add-ev').value = '';
+    toast('Márka sikeresen hozzáadva!');
+    loadMarkak();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function updateMarka() {
+  const id = document.getElementById('marka-edit-id').value;
+  const nev = document.getElementById('marka-edit-nev').value.trim();
+  const orszag = document.getElementById('marka-edit-orszag').value.trim();
+  const alapitasEve = parseInt(document.getElementById('marka-edit-alapitasEve').value);
+  try {
+    await apiFetch('/markak/' + id, { method: 'PUT', body: JSON.stringify({ nev, orszag, alapitasEve }) });
+    closeModal('marka-edit');
+    toast('Márka sikeresen módosítva!');
+    loadMarkak();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+// ─── MODELLEK ────────────────────────────────────────────────────────────────
+async function loadModellek() {
+  try {
+    modellekData = await apiFetch('/modellek');
+    await loadMarkakSilent();
+    renderModellek(modellekData);
+  } catch (e) {
+    document.getElementById('modell-table-body').innerHTML =
+      `<div class="error-banner" style="margin:16px">⚠️ Backend nem elérhető: ${e.message}</div>`;
+  }
+}
+
+function getMarkaNev(markaId) {
+  const m = markakData.find(x => x.id === markaId);
+  return m ? m.nev : '–';
+}
+
+function renderModellek(data) {
+  document.getElementById('modell-count-badge').textContent = data.length + ' modell';
+  if (!data.length) {
+    document.getElementById('modell-table-body').innerHTML =
+      '<div class="empty-state"><div class="big">🚗</div><p>Még nincsenek modellek.</p></div>';
+    return;
+  }
+  const katBadge = { 'SUV': 'badge-blue', 'Sportautó': 'badge-red', 'Szedán': 'badge-green', 'Kombi': 'badge-yellow' };
+  document.getElementById('modell-table-body').innerHTML = `
+    <table>
+      <thead><tr>
+        <th>ID</th><th>Márka</th><th>Modell neve</th><th>Évjárat</th><th>Kategória</th><th>Motor</th><th>Műveletek</th>
+      </tr></thead>
+      <tbody>
+        ${data.map(m => `
+          <tr>
+            <td><span class="badge badge-yellow">#${m.id}</span></td>
+            <td>${m.marka ? m.marka.nev : getMarkaNev(m.markaId)}</td>
+            <td><strong>${m.nev}</strong></td>
+            <td>${m.ev}</td>
+            <td><span class="badge ${katBadge[m.kategoria] || 'badge-green'}">${m.kategoria}</span></td>
+            <td>${m.motorCm3.toLocaleString()} cm³</td>
+            <td><div class="actions">
+              <button class="btn btn-ghost btn-sm" onclick="editModell(${m.id},'${esc(m.nev)}',${m.ev},'${esc(m.kategoria)}',${m.motorCm3})">✏️</button>
+              <button class="btn btn-danger btn-sm" onclick="confirmDelete('modell',${m.id},'${esc(m.nev)}')">🗑️</button>
+            </div></td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+function filterModellek() {
+  const q = document.getElementById('modell-search').value.toLowerCase();
+  const kat = document.getElementById('modell-filter-kat').value;
+  const filtered = modellekData.filter(m =>
+    m.nev.toLowerCase().includes(q) && (!kat || m.kategoria === kat));
+  renderModellek(filtered);
+}
+
+function editModell(id, nev, ev, kat, motor) {
+  document.getElementById('modell-edit-id').value = id;
+  document.getElementById('modell-edit-nev').value = nev;
+  document.getElementById('modell-edit-ev').value = ev;
+  document.getElementById('modell-edit-kat').value = kat;
+  document.getElementById('modell-edit-motor').value = motor;
+  openModal('modell-edit');
+}
+
+async function saveModell() {
+  const markaId = parseInt(document.getElementById('modell-add-markaid').value);
+  const nev = document.getElementById('modell-add-nev').value.trim();
+  const ev = parseInt(document.getElementById('modell-add-ev').value);
+  const kategoria = document.getElementById('modell-add-kat').value;
+  const motorCm3 = parseInt(document.getElementById('modell-add-motor').value);
+  if (!nev || !ev || !kategoria || !motorCm3) { toast('Minden mező kitöltése kötelező!', 'error'); return; }
+  try {
+    await apiFetch('/modellek/marka/' + markaId, { method: 'POST', body: JSON.stringify({ nev, ev, kategoria, motorCm3 }) });
+    closeModal('modell-add');
+    toast('Modell sikeresen hozzáadva!');
+    loadModellek();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function updateModell() {
+  const id = document.getElementById('modell-edit-id').value;
+  const nev = document.getElementById('modell-edit-nev').value.trim();
+  const ev = parseInt(document.getElementById('modell-edit-ev').value);
+  const kategoria = document.getElementById('modell-edit-kat').value;
+  const motorCm3 = parseInt(document.getElementById('modell-edit-motor').value);
+  try {
+    await apiFetch('/modellek/' + id, { method: 'PUT', body: JSON.stringify({ nev, ev, kategoria, motorCm3 }) });
+    closeModal('modell-edit');
+    toast('Modell sikeresen módosítva!');
+    loadModellek();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+// ─── TULAJDONOSOK ────────────────────────────────────────────────────────────
+async function loadTulajdonosok() {
+  try {
+    tulajdonosokData = await apiFetch('/tulajdonosok');
+    renderTulajdonosok(tulajdonosokData);
+  } catch (e) {
+    document.getElementById('tulaj-table-body').innerHTML =
+      `<div class="error-banner" style="margin:16px">⚠️ Backend nem elérhető: ${e.message}</div>`;
+  }
+}
+
+function renderTulajdonosok(data) {
+  document.getElementById('tulaj-count-badge').textContent = data.length + ' tulajdonos';
+  if (!data.length) {
+    document.getElementById('tulaj-table-body').innerHTML =
+      '<div class="empty-state"><div class="big">👤</div><p>Még nincsenek tulajdonosok.</p></div>';
+    return;
+  }
+  document.getElementById('tulaj-table-body').innerHTML = `
+    <table>
+      <thead><tr>
+        <th>ID</th><th>Név</th><th>E-mail</th><th>Telefon</th><th>Márka</th><th>Műveletek</th>
+      </tr></thead>
+      <tbody>
+        ${data.map(t => `
+          <tr>
+            <td><span class="badge badge-yellow">#${t.id}</span></td>
+            <td><strong>${t.nev}</strong></td>
+            <td>${t.email}</td>
+            <td>${t.telefonszam}</td>
+            <td>${t.marka ? t.marka.nev : '–'}</td>
+            <td><div class="actions">
+              <button class="btn btn-ghost btn-sm" onclick="editTulaj(${t.id},'${esc(t.nev)}','${esc(t.email)}','${esc(t.telefonszam)}')">✏️</button>
+              <button class="btn btn-danger btn-sm" onclick="confirmDelete('tulajdonos',${t.id},'${esc(t.nev)}')">🗑️</button>
+            </div></td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+function filterTulajdonosok() {
+  const q = document.getElementById('tulaj-search').value.toLowerCase();
+  const filtered = tulajdonosokData.filter(t =>
+    t.nev.toLowerCase().includes(q) || t.email.toLowerCase().includes(q));
+  renderTulajdonosok(filtered);
+}
+
+function editTulaj(id, nev, email, tel) {
+  document.getElementById('tulaj-edit-id').value = id;
+  document.getElementById('tulaj-edit-nev').value = nev;
+  document.getElementById('tulaj-edit-email').value = email;
+  document.getElementById('tulaj-edit-tel').value = tel;
+  openModal('tulaj-edit');
+}
+
+async function saveTulaj() {
+  const markaId = parseInt(document.getElementById('tulaj-add-markaid').value);
+  const nev = document.getElementById('tulaj-add-nev').value.trim();
+  const email = document.getElementById('tulaj-add-email').value.trim();
+  const telefonszam = document.getElementById('tulaj-add-tel').value.trim();
+  if (!nev || !email || !telefonszam) { toast('Minden mező kitöltése kötelező!', 'error'); return; }
+  try {
+    await apiFetch('/tulajdonosok/marka/' + markaId, { method: 'POST', body: JSON.stringify({ nev, email, telefonszam }) });
+    closeModal('tulaj-add');
+    toast('Tulajdonos sikeresen hozzáadva!');
+    loadTulajdonosok();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function updateTulaj() {
+  const id = document.getElementById('tulaj-edit-id').value;
+  const nev = document.getElementById('tulaj-edit-nev').value.trim();
+  const email = document.getElementById('tulaj-edit-email').value.trim();
+  const telefonszam = document.getElementById('tulaj-edit-tel').value.trim();
+  try {
+    await apiFetch('/tulajdonosok/' + id, { method: 'PUT', body: JSON.stringify({ nev, email, telefonszam }) });
+    closeModal('tulaj-edit');
+    toast('Tulajdonos sikeresen módosítva!');
+    loadTulajdonosok();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+// ─── DELETE CONFIRM ───────────────────────────────────────────────────────────
+function confirmDelete(type, id, nev) {
+  const labels = { marka: 'márkát', modell: 'modellt', tulajdonos: 'tulajdonost' };
+  document.getElementById('confirm-text').textContent =
+    `Biztosan törölni szeretnéd ezt a ${labels[type]}: "${nev}"?`;
+  const btn = document.getElementById('confirm-ok-btn');
+  btn.onclick = async () => {
+    try {
+      const urlMap = { marka: '/markak/', modell: '/modellek/', tulajdonos: '/tulajdonosok/' };
+      await apiFetch(urlMap[type] + id, { method: 'DELETE' });
+      closeModal('confirm');
+      toast('Sikeresen törölve!');
+      if (type === 'marka') loadMarkak();
+      if (type === 'modell') loadModellek();
+      if (type === 'tulajdonos') loadTulajdonosok();
+    } catch (e) { toast(e.message, 'error'); }
+  };
+  openModal('confirm');
+}
+
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+function esc(str) {
+  return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+loadMarkak();
+</script>
+</body>
+</html>
